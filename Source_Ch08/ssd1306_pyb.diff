@@ -1,0 +1,57 @@
+--- /Users/cbell/Downloads/Adafruit-uRTC-master_orig/urtc.py	2017-04-21 16:52:32.000000000 -0400
++++ /Users/cbell/Downloads/Adafruit-uRTC-master/urtc.py	2017-07-20 19:20:38.000000000 -0400
+@@ -40,8 +40,8 @@
+ 
+     def _register(self, register, buffer=None):
+         if buffer is None:
+-            return self.i2c.readfrom_mem(self.address, register, 1)[0]
+-        self.i2c.writeto_mem(self.address, register, buffer)
++            return self.i2c.mem_read(1, self.address, register)[0]
++        self.i2c.mem_write(buffer, self.address, register)
+ 
+     def _flag(self, register, mask, value=None):
+         data = self._register(register)
+@@ -56,8 +56,8 @@
+ 
+     def datetime(self, datetime=None):
+         if datetime is None:
+-            buffer = self.i2c.readfrom_mem(self.address,
+-                                           self._DATETIME_REGISTER, 7)
++            buffer = self.i2c.mem_read(7, self.address,
++                                           self._DATETIME_REGISTER)
+             if self._SWAP_DAY_WEEKDAY:
+                 day = buffer[3]
+                 weekday = buffer[4]
+@@ -128,8 +128,8 @@
+ 
+     def alarm_time(self, datetime=None, alarm=0):
+         if datetime is None:
+-            buffer = self.i2c.readfrom_mem(self.address,
+-                                           self._ALARM_REGISTERS[alarm], 3)
++            buffer = self.i2c.mem_read(3, self.address,
++                                           self._ALARM_REGISTERS[alarm])
+             day = None
+             weekday = None
+             second = None
+@@ -145,8 +145,8 @@
+                     if not buffer[1] & 0x80 else None)
+             if alarm == 0:
+                 # handle seconds
+-                buffer = self.i2c.readfrom_mem(
+-                    self.address, self._ALARM_REGISTERS[alarm] - 1, 1)
++                buffer = self.i2c.mem_read(1,
++                    self.address, self._ALARM_REGISTERS[alarm] - 1)
+                 second = (_bcd2bin(buffer[0] & 0x7f)
+                           if not buffer[0] & 0x80 else None)
+             return datetime_tuple(
+@@ -219,8 +219,8 @@
+ 
+     def alarm_time(self, datetime=None):
+         if datetime is None:
+-            buffer = self.i2c.readfrom_mem(self.address,
+-                                           self._ALARM_REGISTER, 4)
++            buffer = self.i2c.mem_read(4, self.address,
++                                           self._ALARM_REGISTER)
+             return datetime_tuple(
+                 weekday=_bcd2bin(buffer[3] &
+                                  0x7f) if not buffer[3] & 0x80 else None,

@@ -1,0 +1,40 @@
+--- ./clock.py	2017-07-22 11:41:37.000000000 -0400
++++ ./WiPy/clock.py	2017-07-22 11:41:10.000000000 -0400
+@@ -7,24 +7,22 @@
+ # - OLED SPI display
+ # - RTC I2C module
+ #
+-# Note: this only runs on the Pyboard. See chapter text
+-#       for how to modify this to run on the WiPy
++# Note: this only runs on the WiPy. See chapter text
++#       for how to modify this to run on the Pyboard
+ #
+ 
+ # Imports for the project
+-import pyb
+ import urtc
+-from machine import SPI, Pin as pin
+-from pyb import I2C
++import utime
++from machine import SPI, I2C, RTC as rtc, Pin as pin
+ from ssd1306 import SSD1306_SPI as ssd
+ 
+ # Setup SPI and I2C 
+-spi = SPI(2, baudrate=8000000, polarity=0, phase=0)
+-i2c = I2C(1, I2C.MASTER)
+-i2c.init(I2C.MASTER, baudrate=500000)
++spi = SPI(0, SPI.MASTER, baudrate=2000000, polarity=0, phase=0)
++i2c = I2C(0, I2C.MASTER, baudrate=100000,pins=("P9", "P8"))
+ 
+ # Setup the OLED : D/C, RST, CS
+-oled_module = ssd(128,32,spi,pin("Y4"),pin("Y3"),pin("Y5"))
++oled_module = ssd(128,32,spi,pin('P5'),pin('P6'),pin('P7'))
+ 
+ # Setup the RTC
+ rtc_module = urtc.DS1307(i2c)
+@@ -71,4 +69,4 @@
+     while True:
+         clear_screen(oled_module)
+         write_time(oled_module, rtc_module)
+-        pyb.delay(1000)
++        utime.sleep(1)

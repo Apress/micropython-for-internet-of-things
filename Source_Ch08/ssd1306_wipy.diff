@@ -1,0 +1,37 @@
+--- ./Pyboard/ssd1306.py	2016-10-30 14:06:02.000000000 -0400
++++ ./WiPy/ssd1306.py	2017-07-20 21:39:31.000000000 -0400
+@@ -146,23 +146,23 @@
+ 
+     def write_cmd(self, cmd):
+         self.spi.init(baudrate=self.rate, polarity=0, phase=0)
+-        self.cs.high()
+-        self.dc.low()
+-        self.cs.low()
++        self.cs.value(1)
++        self.dc.value(0)
++        self.cs.value(0)
+         self.spi.write(bytearray([cmd]))
+-        self.cs.high()
++        self.cs.value(1)
+ 
+     def write_framebuf(self):
+         self.spi.init(baudrate=self.rate, polarity=0, phase=0)
+-        self.cs.high()
+-        self.dc.high()
+-        self.cs.low()
++        self.cs.value(1)
++        self.dc.value(1)
++        self.cs.value(0)
+         self.spi.write(self.buffer)
+-        self.cs.high()
++        self.cs.value(1)
+ 
+     def poweron(self):
+-        self.res.high()
++        self.res.value(1)
+         time.sleep_ms(1)
+-        self.res.low()
++        self.res.value(0)
+         time.sleep_ms(10)
+-        self.res.high()
++        self.res.value(1)

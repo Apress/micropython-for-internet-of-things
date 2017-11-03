@@ -1,0 +1,4 @@
+1,apples,2.5
+2,oranges,1
+3,peaches,3
+4,grapes,21
